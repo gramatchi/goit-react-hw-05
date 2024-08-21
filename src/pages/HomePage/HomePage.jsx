@@ -3,7 +3,7 @@ import MovieList from "../../components/MovieList/MovieList";
 const HomePage = () => {
   return (
     <>
-      <div>HomePage</div>
+      <h1>Trending today</h1>
       <MovieList />
     </>
   );
