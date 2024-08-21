@@ -1,0 +1,28 @@
+.section {
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+.ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 15px;
+}
+
+.li {
+  margin: 0;
+}
+
+.link {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.active {
+  color: red;
+  border-bottom: 2px solid #007bff;
+}
