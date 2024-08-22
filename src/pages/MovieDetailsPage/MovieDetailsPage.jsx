@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { fetchMovieById } from "../../services/api";
 import css from "./MovieDetailsPage.module.css";
 import { LifeLine } from "react-loading-indicators";
@@ -7,6 +7,11 @@ import { LifeLine } from "react-loading-indicators";
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
   const [movie, setMovie] = useState();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const goBackRef = useRef(location.state)
+
+
 
   useEffect(() => {
     fetchMovieById(movieId).then((data) => setMovie(data));
@@ -18,6 +23,7 @@ const MovieDetailsPage = () => {
 
   return (
     <div>
+      <button onClick={() => navigate(goBackRef.current)}>Go back</button>
       <div className={css.card}>
         <img
           className={css.image}
@@ -41,7 +47,7 @@ const MovieDetailsPage = () => {
           <NavLink to="reviews">Reviews</NavLink>
         </li>
       </ul>
-      <Outlet/>
+      <Outlet />
     </div>
   );
 };

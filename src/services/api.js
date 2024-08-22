@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const url =
-  "https://api.themoviedb.org/3/";
+const url = "https://api.themoviedb.org/3/";
 
 const options = {
   headers: {
@@ -10,13 +9,13 @@ const options = {
   },
 };
 
-export const fetchTrendingMovies = async ()=>{
+export const fetchTrendingMovies = async () => {
   const { data } = await axios.get(
     `${url}/trending/movie/day?language=en-US`,
     options
   );
   return data.results;
-}
+};
 
 export const fetchMovieById = async (movieId) => {
   const { data } = await axios.get(
@@ -50,4 +49,3 @@ export const fetchMovieSearch = async (query) => {
   );
   return data.results;
 };
-
