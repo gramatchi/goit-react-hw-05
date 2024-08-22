@@ -26,3 +26,20 @@ export const fetchMovieById = async (movieId) => {
   return data;
 };
 
+export const fetchMovieCast = async (movieId) => {
+  const { data } = await axios.get(
+    `${url}/movie/${movieId}/credits?language=en-US`,
+    options
+  );
+  return data.cast;
+};
+
+export const fetchMovieReviews = async (movieId) => {
+  const { data } = await axios.get(
+    `${url}/movie/${movieId}/reviews?language=en-US&page=1`,
+    options
+  );
+
+  return data.results;
+};
+
