@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { fetchMovieSearch } from "../../services/api";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import css from "./MoviesPage.module.css";
+import MovieList from "../../components/MovieList/MovieList";
+import { LifeLine } from "react-loading-indicators";
 
 const MoviesPage = () => {
   const [inputValue, setInputValue] = useState("");
   const [movies, setMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-
+  const [isLoading, setIsLoading] = useState(false); 
+  const [error, setError] = useState(false); 
   const query = searchParams.get("query");
 
   const handleChangeInput = (e) => {
@@ -17,25 +19,43 @@ const MoviesPage = () => {
 
   const handleSearch = async () => {
     if (!inputValue) return;
+    setIsLoading(true);
+    setError(null);
     try {
       searchParams.set("query", inputValue);
       setSearchParams(searchParams);
       const data = await fetchMovieSearch(inputValue);
-      setMovies(data);
-      setInputValue(""); 
+      if (data.length === 0) {
+        setError("No movies found."); 
+      } else {
+        setMovies(data);
+      }
+      setInputValue("");
     } catch (error) {
+      setError("Try again."); 
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     if (!query) return;
+    setIsLoading(true);
+    setError(null);
     const fetchData = async () => {
       try {
         const data = await fetchMovieSearch(query);
-        setMovies(data);
+        if (data.length === 0) {
+          setError("No movies found."); 
+        } else {
+          setMovies(data);
+        }
       } catch (error) {
+        setError("Try again."); 
         console.log(error);
+      } finally {
+        setIsLoading(false); 
       }
     };
     fetchData();
@@ -59,15 +79,11 @@ const MoviesPage = () => {
           Search
         </button>
       </div>
-      <ul className={css.list}>
-        {movies.map((movie) => (
-          <li key={movie.id} className={css.listItem}>
-            <Link to={`/movies/${movie.id}`} className={css.link} state={location}>
-              {movie.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+
+      {isLoading && <LifeLine color="red" size="medium" text="" textColor="" />}
+      {error && <p className={css.error}>{error}</p>}
+
+      {!isLoading && !error && <MovieList movies={movies} />}
     </div>
   );
 };

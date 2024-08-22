@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { fetchMovieById } from "../../services/api";
 import css from "./MovieDetailsPage.module.css";
 import { LifeLine } from "react-loading-indicators";
@@ -9,9 +15,7 @@ const MovieDetailsPage = () => {
   const [movie, setMovie] = useState();
   const navigate = useNavigate();
   const location = useLocation();
-  const goBackRef = useRef(location.state)
-
-
+  const goBackRef = useRef(location.state);
 
   useEffect(() => {
     fetchMovieById(movieId).then((data) => setMovie(data));
