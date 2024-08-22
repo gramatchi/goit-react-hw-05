@@ -9,45 +9,32 @@ const MoviesPage = () => {
   const [inputValue, setInputValue] = useState("");
   const [movies, setMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false); 
-  const [error, setError] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+
   const query = searchParams.get("query");
 
   const handleChangeInput = (e) => {
     setInputValue(e.target.value);
   };
 
-  const handleSearch = async () => {
-    if (!inputValue) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      searchParams.set("query", inputValue);
-      setSearchParams(searchParams);
-      const data = await fetchMovieSearch(inputValue);
-      if (data.length === 0) {
-        setError("No movies found."); 
-      } else {
-        setMovies(data);
-      }
-      setInputValue("");
-    } catch (error) {
-      setError("Try again."); 
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (inputValue.trim() === "") return;
+    setSearchParams({ query: inputValue });
   };
 
   useEffect(() => {
     if (!query) return;
-    setIsLoading(true);
-    setError(null);
+
     const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
         const data = await fetchMovieSearch(query);
         if (data.length === 0) {
-          setError("No movies found."); 
+          setError("No movies found.");
         } else {
           setMovies(data);
         }
@@ -55,9 +42,10 @@ const MoviesPage = () => {
         setError("Try again."); 
         console.log(error);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
+
     fetchData();
   }, [query]);
 
@@ -68,17 +56,17 @@ const MoviesPage = () => {
 
   return (
     <div className={css.container}>
-      <div className={css.searchContainer}>
+      <form onSubmit={handleFormSubmit} className={css.searchContainer}>
         <input
           className={css.input}
           type="text"
           value={inputValue}
           onChange={handleChangeInput}
         />
-        <button onClick={handleSearch} className={css.button}>
+        <button type="submit" className={css.button}>
           Search
         </button>
-      </div>
+      </form>
 
       {isLoading && <LifeLine color="red" size="medium" text="" textColor="" />}
       {error && <p className={css.error}>{error}</p>}
