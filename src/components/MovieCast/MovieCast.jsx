@@ -1,29 +1,43 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchMovieCast } from "../../services/api";
+import css from "./MovieCast.module.css";
 
 const MovieCast = () => {
   const { movieId } = useParams();
   const [cast, setCast] = useState([]);
 
   useEffect(() => {
-    fetchMovieCast(movieId).then((data) => setCast(data));
+    const fetchCast = async () => {
+      try {
+        const data = await fetchMovieCast(movieId);
+        setCast(data);
+      } catch (error) {
+        console.error("Failed to fetch cast:", error);
+      }
+    };
+
+    fetchCast();
   }, [movieId]);
 
-  if (!cast) return <h2>No actors, sorry no sorry</h2>;
+  if (cast.length === 0) return <h2>No actors found</h2>;
 
   return (
-    <ul>
-      {cast.map((actor) => (
-        <li key={actor.id}>
-          <img
-            src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
-            alt=""
-          />
-          {actor.name} <p>Character: character</p>
-        </li>
-      ))}
-    </ul>
+    <div className={css.container}>
+      <ul className={css.actorList}>
+        {cast.map((actor) => (
+          <li className={css.actorItem} key={actor.id}>
+            <img
+              className={css.actorImage}
+              src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+              alt={actor.name}
+            />
+            <p className={css.actorName}>{actor.name}</p>
+            <p className={css.actorCharacter}>Character: {actor.character}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
